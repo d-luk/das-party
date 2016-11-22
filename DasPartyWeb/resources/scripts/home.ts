@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../../DasPartyHost/Scripts/typings/jquery/jquery.d.ts" />
 module SpotifyLogin {
-    var localToken:string = localStorage.getItem("token");
+    var localToken: string = localStorage.getItem("token");
 
     function login(callback: (token: string) => any, forced?: boolean) {
 
@@ -37,7 +37,7 @@ module SpotifyLogin {
                     localStorage.setItem("token", hash.access_token);
                     callback(hash.access_token);
                 }
-            },
+            }, 
             false);
 
         window.open(url,
@@ -59,8 +59,9 @@ module SpotifyLogin {
 
     function startParty(user: SpotifyAPI.ILoginResponse): void {
         $("#account-info")
-            .html((user.display_name ? `Hello, ${user.display_name}!` : `Hello there!`) +
-                " Let's party");
+            .html("Hello" + (user.display_name ? `, ${user.display_name}`
+                : ($.isNumeric(user.id) ? " there" : `, ${user.id}`))
+            + "! Let's party");
         $("#login-container").hide();
         $("#playlist-container").show();
     }

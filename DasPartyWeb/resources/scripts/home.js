@@ -42,8 +42,9 @@ var SpotifyLogin;
     }
     function startParty(user) {
         $("#account-info")
-            .html((user.display_name ? "Hello, " + user.display_name + "!" : "Hello there!") +
-            " Let's party");
+            .html("Hello" + (user.display_name ? ", " + user.display_name
+            : ($.isNumeric(user.id) ? " there" : ", " + user.id))
+            + "! Let's party");
         $("#login-container").hide();
         $("#playlist-container").show();
     }
