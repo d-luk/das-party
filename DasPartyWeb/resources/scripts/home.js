@@ -37,11 +37,10 @@ var SpotifyLogin;
             getUserData(accessToken)
                 .then(function (response) {
                 console.log(response);
-                $("#account-info").html((response.display_name ? "Hello, " + response.display_name + "!" : "Hello there!") + "Let's party");
+                $("#account-info").html((response.display_name ? "Hello, " + response.display_name + "!" : "Hello " + response.id + "!") + "Let's party");
                 $("#login-container").hide();
                 $("#playlist-container").show();
             });
         });
     });
 })(SpotifyLogin || (SpotifyLogin = {}));
-//# sourceMappingURL=home.js.map

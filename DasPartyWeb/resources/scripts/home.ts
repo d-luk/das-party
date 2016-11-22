@@ -46,9 +46,8 @@ module SpotifyLogin {
         login(accessToken => {
             getUserData(accessToken)
                 .then((response: SpotifyAPI.ILoginResponse) => {
-                    console.log(response);
-
-                    $("#account-info").html((response.display_name ? `Hello, ${response.display_name}!` : `Hello there!`) + "Let's party"); 
+                    console.log(response);                    
+                    $("#account-info").html((response.display_name ? `Hello, ${response.display_name}!` : `Hello ${response.id}!`) + "Let's party"); 
                     $("#login-container").hide();
                     $("#playlist-container").show(); 
                 });
