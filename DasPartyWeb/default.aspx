@@ -12,15 +12,15 @@
 
     <div id="login-container">
         <h1>Log in to get the party started</h1>
-        <button class="btn btn-primary" id="btn-login">Login</button>
+        <button class="btn btn-primary" id="btn-login">Let's party ></button>
         <div id="result"></div>
     </div>
-    
+
     <div id="playlist-container">
         <div id="account-info"></div>
 
-    <h1>Playlist</h1>
-    <asp:Literal ID="playlist" runat="server"></asp:Literal>
-        </div>
+        <h1>Playlist</h1>
+        <asp:Literal ID="playlist" runat="server"></asp:Literal>
+    </div>
 
 </asp:Content>
