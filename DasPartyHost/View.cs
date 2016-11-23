@@ -177,13 +177,10 @@ namespace DasPartyHost
 
                 // Remove track from playlist
                 track.Delete(_playlist.ID);
+                _client.Play(_playlist.ID);
                 RefreshPlaylist();
             }
-            else
-            {
-                success = false;
-                _client.Skip();
-            }
+            else success = false;
 
             UpdateTrackView();
             return success;

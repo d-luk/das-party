@@ -13,13 +13,19 @@ namespace DasPartyHost.Spotify
         private readonly SpotifyLocalAPI _spotify;
         private readonly View _view;
 
+        private bool _switching;
+
         public Client(View view)
         {
             _view = view;
 
             _spotify = new SpotifyLocalAPI {ListenForEvents = true};
             _spotify.OnPlayStateChange += (s, e) => Playing = Status.Playing;
-            _spotify.OnTrackChange += (s, e) => view.PlayNextTrack();
+            _spotify.OnTrackChange += (s, e) =>
+            {
+                if (_switching) _switching = false;
+                else view.PlayNextTrack();
+            };
             TryConnect();
 
             _isPlaying = Status.Playing;
@@ -110,7 +116,12 @@ namespace DasPartyHost.Spotify
             _view.Invoke(new MethodInvoker(delegate { _view.UpdatePlayButton(); }));
         }
 
-        public async void Play(string trackID) => await _spotify.PlayURL("spotify:track:" + trackID);
+        public async void Play(string trackID)
+        {
+            _switching = true;
+            await _spotify.PlayURL("spotify:track:" + trackID);
+        }
+
         public void Skip() => _spotify.Skip();
     }
 }

@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="auth.aspx" />
+    <Content Include="google7e90c44709eff8a3.html" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

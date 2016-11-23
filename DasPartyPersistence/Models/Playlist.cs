@@ -30,10 +30,8 @@
                 .G("right")
 
                 // Temporarily add playlistTrackID
-//                .Merge(track => DB.R.HashMap("playlistTrackID",
-//                    DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
-//                        .With("trackID", track.G("id"))).G("id")))
-                .Merge(track => DB.R.HashMap("playlistTrackID", "x"))
+                .Merge(track => DB.R.HashMap("playlistTrackID", DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
+                            .With("trackID", track.G("id"))).Nth(0)["id"]))
 
                 // Calculate votes
                 .Merge(track => DB.R.HashMap("votes",
