@@ -126,7 +126,7 @@ namespace DasPartyHost
         {
             // Add track to the database
             var result = (TrackResult) searchListBox.SelectedItem;
-            _playlist.AddTrack(new Track(result.ID, result.Artists[0], result.Name, result.Votes));
+            _playlist.AddTrack(new Track(result.ID, result.Artists[0], result.Name, result.ImageURL, result.Votes));
 
             // Remove result from the list
             searchListBox.Items.RemoveAt(searchListBox.SelectedIndex);

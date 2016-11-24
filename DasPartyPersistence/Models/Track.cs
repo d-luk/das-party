@@ -3,15 +3,17 @@
     public class Track
     {
         public string ID { get; }
-        public string Artist { get; }
         public string Name { get; }
+        public string Artist { get; }
+        public string ImageURL { get; }
         public int Votes { get; }
 
-        public Track(string id, string artist, string name, int votes)
+        public Track(string id, string artist, string name, string imageUrl, int votes)
         {
             ID = id;
             Artist = artist;
             Name = name;
+            ImageURL = imageUrl;
             Votes = votes;
         }
 

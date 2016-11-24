@@ -58,7 +58,7 @@
             if (!trackExists)
             {
                 DB.R.Table("track")
-                    .Insert(DB.R.HashMap("id", track.ID).With("name", track.Name).With("artist", track.Artist))
+                    .Insert(DB.R.HashMap("id", track.ID).With("name", track.Name).With("artist", track.Artist).With("imageURL", track.ImageURL))
                     .Run(DB.Connection);
             }
 

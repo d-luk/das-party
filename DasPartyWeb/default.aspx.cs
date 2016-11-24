@@ -10,11 +10,9 @@ namespace DasPartyWeb
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            playlist.Text = Playlist.Get("penis").GetTracks().OrderBy(track => track.Votes).Reverse()
-                                .Aggregate("<ol>", (current, track)
-                                    => current + "<li>" + track.Artist + " - " + track.Name
-                                       + " [" + track.Votes + " votes]</li>") + "</ol>";
+            
+            playlist.DataSource = Playlist.Get("penis").GetTracks().OrderBy(track => track.Votes).Reverse();
+            playlist.DataBind();
         }
     }
 }

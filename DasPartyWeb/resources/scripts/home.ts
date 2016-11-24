@@ -63,7 +63,7 @@ module SpotifyLogin {
                 : ($.isNumeric(user.id) ? " there" : `, ${user.id}`))
             + "! Let's party");
         $("#login-container").hide();
-        $("#playlist-container").show();
+        $("#playlist-wrapper").show();
     }
 
     function tryLogin(forced?: boolean) {
