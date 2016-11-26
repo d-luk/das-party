@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Forms;
 using DasPartyHost.Models;
 using DasPartyHost.Spotify;
 using DasPartyHost.Utils;
-using DasPartyPersistence;
 using DasPartyPersistence.Models;
 using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Web.Models;
@@ -25,7 +23,7 @@ namespace DasPartyHost
         public View()
         {
             InitializeComponent();
-            
+
             // Connect to the client:
             _client = new Client(this);
             UpdateTrackView();
@@ -36,8 +34,8 @@ namespace DasPartyHost
 
             // Connect to the Rethink database
             _playlist = Playlist.Get(UserID);
-
-            InitPlaylist();
+            RefreshPlaylist();
+            _playlist.OnPlaylistChange += (sender, args) => RefreshPlaylist();
         }
 
         public void UpdateTrackView()
@@ -136,32 +134,6 @@ namespace DasPartyHost
 
         #region Database stuff
 
-        private void InitPlaylist()
-        {
-            RefreshPlaylist();
-
-            new Thread(() =>
-            {
-//                var playlistChanges = DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlist", _playlist.ID)).Changes().RunCursor<Playlist>(DB.Connection);
-                var voteChanges = DB.R.Table("vote").Changes().RunCursor<Vote>(DB.Connection);
-                // TODO: Only changes on current playlist
-
-//                foreach (var change in playlistChanges)
-//                {
-//                    // TODO: Only update changed
-//                    Debug.WriteLine("a");
-//                    RefreshPlaylist();
-//                }
-
-                foreach (var change in voteChanges)
-                {
-                    // TODO: Only update changed
-                    Debug.WriteLine("b");
-                    RefreshPlaylist();
-                }
-            }) {IsBackground = true}.Start();
-        }
-
         private void RefreshPlaylist() => this.InvokeIfRequired(() => dataGridView1.DataSource = _playlist.GetTracks());
         private void refreshBtn_Click(object sender, EventArgs e) => RefreshPlaylist();
 
@@ -177,27 +149,48 @@ namespace DasPartyHost
 
                 // Remove track from playlist
                 track.Delete(_playlist.ID);
-                _client.Play(_playlist.ID);
+                _client.Play(track.ID);
                 RefreshPlaylist();
             }
             else success = false;
-
             UpdateTrackView();
+
+
             return success;
         }
 
         #endregion
 
+        private Track SelectedTrack => (Track) dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].DataBoundItem;
 
-        // TEMP:
-        private void button1_Click(object sender, EventArgs e)
+        #region Voting
+
+        private void upvoteBtn_Click(object sender, EventArgs e)
         {
-            // Upvote
-            var tracks = _playlist.GetTracks();
-            if (tracks.Length > 0)
+            // Upvote selected track
+            SelectedTrack.Vote(UserID, _playlist.ID);
+        }
+
+        private void downvoteBtn_Click(object sender, EventArgs e)
+        {
+            // Downvote selected track
+            SelectedTrack.Vote(UserID, _playlist.ID, true);
+        }
+
+        #endregion
+
+        #region Deleting track
+
+        private void View_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
             {
-                tracks[0].Vote(UserID, _playlist.ID);
+                SelectedTrack.Delete(_playlist.ID);
             }
         }
+
+        #endregion
+
+
     }
 }

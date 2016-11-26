@@ -1,4 +1,8 @@
-﻿namespace DasPartyPersistence.Models
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+
+namespace DasPartyPersistence.Models
 {
     public class Playlist
     {
@@ -11,6 +15,8 @@
             ID = id;
             Name = name;
             Host = host;
+
+            InitChangeListeners();
         }
 
         public static Playlist Get(string hostID)
@@ -30,8 +36,11 @@
                 .G("right")
 
                 // Temporarily add playlistTrackID
-                .Merge(track => DB.R.HashMap("playlistTrackID", DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
-                            .With("trackID", track.G("id"))).Nth(0)["id"]))
+                .Merge(
+                    track =>
+                        DB.R.HashMap("playlistTrackID",
+                            DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
+                                .With("trackID", track.G("id"))).Nth(0)["id"]))
 
                 // Calculate votes
                 .Merge(track => DB.R.HashMap("votes",
@@ -44,9 +53,8 @@
                         .Sub(DB.R.Table("vote")
                             .Filter(DB.R.HashMap("playlistTrackID", track.G("playlistTrackID"))
                                 .With("isDownvote", true)).Count())))
-
-                // Remove playlistTrackID and execute
                 .Without("playlistTrackID")
+                .OrderBy(DB.R.Desc("votes"))
                 .RunResult<Track[]>(DB.Connection);
         }
 
@@ -58,7 +66,11 @@
             if (!trackExists)
             {
                 DB.R.Table("track")
-                    .Insert(DB.R.HashMap("id", track.ID).With("name", track.Name).With("artist", track.Artist).With("imageURL", track.ImageURL))
+                    .Insert(
+                        DB.R.HashMap("id", track.ID)
+                            .With("name", track.Name)
+                            .With("artist", track.Artist)
+                            .With("imageURL", track.ImageURL))
                     .Run(DB.Connection);
             }
 
@@ -77,5 +89,44 @@
             // Add upvote by host if not exists
             track.Vote(Host.ID, ID);
         }
+
+        #region Change listeners
+        
+        public event EventHandler OnPlaylistChange;
+
+        private void InitChangeListeners()
+        {
+            // Listen for vote changes
+            new Thread(() =>
+                {
+                    var voteChanges = DB.R.Table("vote").Changes().RunCursor<Vote>(DB.Connection);
+                    // TODO: Only changes on current playlist
+
+                    foreach (var voteChange in voteChanges)
+                    {
+                        Debug.WriteLine("Votes changed");
+                        OnPlaylistChange?.Invoke(this, EventArgs.Empty); // TODO: Include changes
+                    }
+                })
+                {IsBackground = true}.Start();
+
+            // Listen for playlistTrack changes
+            new Thread(() =>
+                {
+                    var playlistChanges = DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID))
+                        .Changes().RunCursor<Playlist>(DB.Connection);
+
+                    foreach (var playlistChange in playlistChanges)
+                    {
+                        Debug.WriteLine("Playlist tracks changed");
+                        OnPlaylistChange?.Invoke(this, EventArgs.Empty); // TODO: Include changes
+                    }
+                })
+                {IsBackground = true}.Start();
+        }
+
+        #endregion
     }
+    
+
 }
