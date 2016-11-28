@@ -19,17 +19,25 @@ namespace DasPartyPersistence.Models
             InitChangeListeners();
         }
 
-        public static Playlist Get(string hostID)
+        public static Playlist Get(string id)
         {
-            // TODO: Filter on hostID
-            return DB.R.Table("playlist").Merge(playlist
+            return DB.R.Table("playlist").Filter(DB.R.HashMap("id", id)).Merge(playlist
                     => DB.R.HashMap("host", DB.R.Table("user").Get(playlist.G("hostID"))))[0].Without("hostID")
                 .RunResult<Playlist>(DB.Connection);
         }
 
-        public Track[] GetTracks()
+        public static Playlist GetByHost(string hostID)
         {
-            return DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID))
+            return DB.R.Table("playlist").Filter(DB.R.HashMap("hostID", hostID)).Merge(playlist
+                    => DB.R.HashMap("host", DB.R.Table("user").Get(playlist.G("hostID"))))[0]
+                .RunResult<Playlist>(DB.Connection);
+        }
+
+        public Track[] GetTracks() => GetTracks(ID);
+
+        public static Track[] GetTracks(string playlistID)
+        {
+            return DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID))
 
                 // PlaylistTrack to Track with left join
                 .InnerJoin(DB.R.Table("track"), (plTrack, track) => plTrack.G("trackID").Eq(track.G("id")))
@@ -39,7 +47,7 @@ namespace DasPartyPersistence.Models
                 .Merge(
                     track =>
                         DB.R.HashMap("playlistTrackID",
-                            DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
+                            DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID)
                                 .With("trackID", track.G("id"))).Nth(0)["id"]))
 
                 // Calculate votes
@@ -92,7 +100,22 @@ namespace DasPartyPersistence.Models
 
         #region Change listeners
         
-        public event EventHandler OnPlaylistChange;
+        public event EventHandler<PlaylistChangeEventArgs> OnPlaylistChange;
+
+        public class PlaylistChangeEventArgs : EventArgs
+        {
+            // TODO: Only store changes
+
+            private readonly string _playlistID;
+
+            private Track[] _tracks;
+            public Track[] Tracks => _tracks ?? (_tracks = GetTracks(_playlistID));
+
+            public PlaylistChangeEventArgs(string playlistID)
+            {
+                _playlistID = playlistID;
+            }
+        }
 
         private void InitChangeListeners()
         {
@@ -105,7 +128,7 @@ namespace DasPartyPersistence.Models
                     foreach (var voteChange in voteChanges)
                     {
                         Debug.WriteLine("Votes changed");
-                        OnPlaylistChange?.Invoke(this, EventArgs.Empty); // TODO: Include changes
+                        OnPlaylistChange?.Invoke(this, new PlaylistChangeEventArgs(ID));
                     }
                 })
                 {IsBackground = true}.Start();
@@ -119,7 +142,7 @@ namespace DasPartyPersistence.Models
                     foreach (var playlistChange in playlistChanges)
                     {
                         Debug.WriteLine("Playlist tracks changed");
-                        OnPlaylistChange?.Invoke(this, EventArgs.Empty); // TODO: Include changes
+                        OnPlaylistChange?.Invoke(this, new PlaylistChangeEventArgs(ID));
                     }
                 })
                 {IsBackground = true}.Start();

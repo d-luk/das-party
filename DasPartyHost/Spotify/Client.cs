@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using DasPartyHost.Utils;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Models;
 
@@ -106,14 +107,14 @@ namespace DasPartyHost.Spotify
         {
             await _spotify.Play();
             _isPlaying = true;
-            _view.Invoke(new MethodInvoker(delegate { _view.UpdatePlayButton(); }));
+            _view.InvokeIfRequired(() => _view.UpdatePlayButton());
         }
 
         private async void Pause()
         {
             await _spotify.Pause();
             _isPlaying = false;
-            _view.Invoke(new MethodInvoker(delegate { _view.UpdatePlayButton(); }));
+            _view.InvokeIfRequired(() => _view.UpdatePlayButton());
         }
 
         public async void Play(string trackID)

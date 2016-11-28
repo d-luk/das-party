@@ -6,6 +6,10 @@
 
 <asp:Content runat="server" ID="Scripts" ContentPlaceHolderID="Scripts">
     <script src="/resources/scripts/home.js"></script>
+
+    <script src="/resources/scripts/vendor/jquery.signalR-2.2.1.min.js"></script>
+    <script src="signalr/hubs"></script>
+    <script src="/resources/scripts/connection.js"></script>
 </asp:Content>
 
 <asp:Content runat="server" ID="Content" ContentPlaceHolderID="Content">
@@ -20,29 +24,60 @@
         <div id="account-info"></div>
 
         <h1>Playlist</h1>
-        
+
         <div id="playlist-container">
-        <asp:Repeater ID="playlist" runat="server">
-            <ItemTemplate>
-                <div class="track-container" data-id="<%# Eval("ID") %>">
-                    <div class="track-image-container"><img class="track-image" src="<%# Eval("ImageURL") %>" alt="Album cover"/></div>
+            <div id="template-track" class="track-container" data-id="x">
+                <div class="track-image-container">
+                    <img class="track-image" src="x" alt="Album cover"/>
+                </div>
+
+                <div>
+                    <div class="track-name">x</div>
 
                     <div>
-                        <div class="track-name"><%# Eval("Name") %></div>
-                        
-                        <div><span class="tarck-artist"><%# Eval("Artist") %></span> 
-                            - <span class=""><%# Eval("Votes") %> votes</span></div>
-                    </div>
-                    
-                    <div class="track-buttons">
-                        <button class="btn upvote-btn"><img src="/resources/images/thumb-up.png" alt="Thumbs up"/></button>
-                        <button class="btn downvote-btn"><img src="/resources/images/thumb-down.png" alt="Thumbs down"/></button>
-                    </div>
+                        <span class="track-artist">x</span> 
+                        | <span class="track-votes">x</span> votes</div>
                 </div>
-                
-            </ItemTemplate>
-        </asp:Repeater>
+
+                <div class="track-buttons">
+                    <button class="btn upvote-btn">
+                        <img src="/resources/images/thumb-up.png" alt="Thumbs up"/>
+                    </button>
+                    <button class="btn downvote-btn">
+                        <img src="/resources/images/thumb-down.png" alt="Thumbs down"/>
+                    </button>
+                </div>
             </div>
+
+            <asp:Repeater ID="playlist" runat="server">
+                <ItemTemplate>
+
+                    <div class="track-container" data-id="<%# Eval("ID") %>">
+                        <div class="track-image-container">
+                            <img class="track-image" src="<%# Eval("ImageURL") %>" alt="Album cover"/>
+                        </div>
+
+                        <div>
+                            <div class="track-name"><%# Eval("Name") %></div>
+
+                            <div>
+                                <span class="track-artist"><%# Eval("Artist") %></span> 
+                                | <span class="track-votes"><%# Eval("Votes") %></span> votes</div>
+                        </div>
+
+                        <div class="track-buttons">
+                            <button class="btn upvote-btn">
+                                <img src="/resources/images/thumb-up.png" alt="Thumbs up"/>
+                            </button>
+                            <button class="btn downvote-btn">
+                                <img src="/resources/images/thumb-down.png" alt="Thumbs down"/>
+                            </button>
+                        </div>
+                    </div>
+
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
     </div>
 
 </asp:Content>

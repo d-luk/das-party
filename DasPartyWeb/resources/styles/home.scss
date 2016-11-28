@@ -4,13 +4,13 @@
 
 .track-container {
     position: relative;
-        margin-bottom: 5px;
+    margin-bottom: 5px;
 
     > div {
-    display: inline-block;
-    vertical-align: middle;
+        display: inline-block;
+        vertical-align: middle;
+    }
 }
-                  }
 
 .track-image-container {
    margin-right: 10px;
@@ -26,19 +26,23 @@
 }
 
 .track-buttons {
-    position:absolute;
+    position: absolute;
     right: 0;
     top: 0;
     bottom: 0;
 
     button {
-            font-size: 0;
-    display: block;
-    margin-bottom: 7px;
+        font-size: 0;
+        display: block;
+        margin-bottom: 7px;
 
         img {
-                height: 20px;
-    width: 20px;
+            height: 20px;
+            width: 20px;
         }
     }
+}
+
+#template-track {
+    display: none;
 }

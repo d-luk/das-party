@@ -33,7 +33,7 @@ namespace DasPartyHost
             _web = new WebAPI();
 
             // Connect to the Rethink database
-            _playlist = Playlist.Get(UserID);
+            _playlist = Playlist.GetByHost(UserID);
             RefreshPlaylist();
             _playlist.OnPlaylistChange += (sender, args) => RefreshPlaylist();
         }

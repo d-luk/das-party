@@ -98,6 +98,10 @@
       <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -120,6 +124,7 @@
     <Content Include="resources\images\party-background.jpg" />
     <Content Include="resources\images\thumb-up.png" />
     <Content Include="resources\images\thumb-down.png" />
+    <Content Include="resources\scripts\connection.js" />
     <Content Include="resources\scripts\vendor\jquery-3.1.1.min.js" />
     <Content Include="resources\scripts\vendor\modernizr-custom.min.js" />
     <Content Include="resources\styles\home.css">
@@ -151,16 +156,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\Kevins sexy dingen.pubxml" />
-    <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="default.aspx" />
-    <Content Include="Scripts\jquery-1.6.4.js" />
-    <Content Include="Scripts\jquery-1.6.4.min.js" />
-    <Content Include="Scripts\jquery.signalR-2.2.1.js" />
-    <Content Include="Scripts\jquery.signalR-2.2.1.min.js" />
+    <Content Include="resources\scripts\vendor\jquery.signalR-2.2.1.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatHub.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -168,6 +168,7 @@
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PlaylistHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
