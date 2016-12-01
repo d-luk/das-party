@@ -1,5 +1,7 @@
 ﻿/// <reference path="../../../DasPartyHost/Scripts/typings/jquery/jquery.d.ts" />
 module SpotifyLogin {
+    export var loggedInUser: SpotifyAPI.ILoginResponse;
+
     var localToken: string = localStorage.getItem("token");
 
     function login(callback: (token: string) => any, forced?: boolean) {
@@ -58,6 +60,7 @@ module SpotifyLogin {
     }
 
     function startParty(user: SpotifyAPI.ILoginResponse): void {
+        loggedInUser = user;
         $("#account-info")
             .html("Hello" + (user.display_name ? `, ${user.display_name}`
                 : ($.isNumeric(user.id) ? " there" : `, ${user.id}`))

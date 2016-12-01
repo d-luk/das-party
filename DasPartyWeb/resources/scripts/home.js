@@ -41,6 +41,7 @@ var SpotifyLogin;
         });
     }
     function startParty(user) {
+        SpotifyLogin.loggedInUser = user;
         $("#account-info")
             .html("Hello" + (user.display_name ? ", " + user.display_name
             : ($.isNumeric(user.id) ? " there" : ", " + user.id))

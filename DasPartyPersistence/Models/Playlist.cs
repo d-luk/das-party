@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace DasPartyPersistence.Models
@@ -64,6 +65,12 @@ namespace DasPartyPersistence.Models
                 .Without("playlistTrackID")
                 .OrderBy(DB.R.Desc("votes"))
                 .RunResult<Track[]>(DB.Connection);
+        }
+
+        public Track GetTrack(string trackID)
+        {
+            // TODO: Optimize with custom query
+            return GetTracks().First(t => t.ID == trackID);
         }
 
         public void AddTrack(Track track)
