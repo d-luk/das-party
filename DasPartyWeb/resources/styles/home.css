@@ -3,7 +3,8 @@
 
 .track-container {
   position: relative;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  height: 100px; }
   .track-container > div {
     display: inline-block;
     vertical-align: middle; }
@@ -13,7 +14,9 @@
 
 .track-image {
   width: 100px;
-  height: 100px; }
+  height: 100px;
+  line-height: 5;
+  display: block; }
 
 .track-name {
   font-size: 28px; }
