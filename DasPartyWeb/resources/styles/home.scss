@@ -5,6 +5,7 @@
 .track-container {
     position: relative;
     margin-bottom: 5px;
+    height: 100px;
 
     > div {
         display: inline-block;
@@ -19,6 +20,9 @@
 .track-image {
     width: 100px;
     height: 100px;
+    // t.b.v. falen laden album cover
+    line-height: 5;
+    display: block;
 }
 
 .track-name {
