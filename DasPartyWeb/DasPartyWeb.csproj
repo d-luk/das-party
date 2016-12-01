@@ -125,6 +125,15 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\images\favicons\android-chrome-96x96.png" />
+    <Content Include="resources\images\favicons\apple-touch-icon.png" />
+    <Content Include="resources\images\favicons\browserconfig.xml" />
+    <Content Include="resources\images\favicons\favicon-16x16.png" />
+    <Content Include="resources\images\favicons\favicon-32x32.png" />
+    <Content Include="resources\images\favicons\favicon.ico" />
+    <Content Include="resources\images\favicons\mstile-150x150.png" />
+    <Content Include="resources\images\favicons\safari-pinned-tab.svg" />
+    <Content Include="resources\images\default-cover.png" />
     <Content Include="resources\images\party-background.jpg" />
     <Content Include="resources\images\thumb-up.png" />
     <Content Include="resources\images\thumb-down.png" />
@@ -149,6 +158,7 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="resources\images\favicons\manifest.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

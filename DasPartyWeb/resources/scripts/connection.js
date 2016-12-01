@@ -18,7 +18,9 @@
             $newTrack.find(".track-name").html(track.Name);
             $newTrack.find(".track-artist").html(track.Artist);
             $newTrack.find(".track-votes").html(track.Votes);
-            $newTrack.find(".track-image").attr("src", track.ImageURL);
+
+            if (track.ImageURL)
+                $newTrack.find(".track-image").attr("src", track.ImageURL);
 
             $newTrack.appendTo($playlist);
         });

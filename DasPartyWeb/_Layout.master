@@ -11,6 +11,15 @@
 
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet"/>
     <link rel="stylesheet" href="/resources/styles/site.css">
+    
+    <link rel="apple-touch-icon" sizes="120x120" href="/resources/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/resources/images/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/resources/images/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/resources/images/favicons/manifest.json">
+    <link rel="mask-icon" href="/resources/images/favicons/safari-pinned-tab.svg" color="#1ed760">
+    <link rel="shortcut icon" href="/resources/images/favicons/favicon.ico">
+    <meta name="msapplication-config" content="/resources/images/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#1ed760">
 
     <asp:ContentPlaceHolder id="Styles" runat="server"></asp:ContentPlaceHolder>
 

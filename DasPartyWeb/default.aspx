@@ -26,17 +26,17 @@
         <h1>Playlist</h1>
 
         <div id="playlist-container">
-            <div id="template-track" class="track-container" data-id="x">
+            <div id="template-track" class="track-container" data-id="">
                 <div class="track-image-container">
-                    <img class="track-image" src="x" alt="Album cover"/>
+                    <img class="track-image" src="/resources/images/default-cover.png" alt="Album cover"/>
                 </div>
 
                 <div>
-                    <div class="track-name">x</div>
+                    <div class="track-name"></div>
 
                     <div>
-                        <span class="track-artist">x</span> 
-                        | <span class="track-votes">x</span> votes</div>
+                        <span class="track-artist"></span> 
+                        | <span class="track-votes">0</span> votes</div>
                 </div>
 
                 <div class="track-buttons">

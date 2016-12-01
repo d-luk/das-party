@@ -20,8 +20,10 @@
 .track-image {
     width: 100px;
     height: 100px;
+    border-radius: 3px;
+
     // t.b.v. falen laden album cover
-    line-height: 5;
+    line-height: 6;
     display: block;
 }
 
