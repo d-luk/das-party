@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DasPartyHost.Models;
 using DasPartyHost.Spotify;
@@ -74,7 +75,7 @@ namespace DasPartyHost
                 if (selectedRowIndex != null && dataGridView1.Rows.Count > selectedRowIndex)
                 {
                     // Select the first *visible* column (1)
-                    dataGridView1.CurrentCell = dataGridView1.Rows[(int)selectedRowIndex].Cells[1];
+                    dataGridView1.CurrentCell = dataGridView1.Rows[(int) selectedRowIndex].Cells[1];
                 }
             });
         }
@@ -85,8 +86,11 @@ namespace DasPartyHost
 
         private void playBtn_Click(object sender, EventArgs e)
         {
-            if (_remote.IsPlaying) _remote.Pause().RunSynchronously();
-            else _remote.Play().RunSynchronously();
+            Task.Run(async () =>
+            {
+                if (_remote.IsPlaying) await _remote.Pause();
+                else await _remote.Play();
+            });
 
             this.InvokeIfRequired(UpdatePlayButton);
         }
