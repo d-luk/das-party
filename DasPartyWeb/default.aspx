@@ -54,7 +54,7 @@
 
                     <div class="track-container" data-id="<%# Eval("ID") %>">
                         <div class="track-image-container">
-                            <img class="track-image" src="<%# Eval("ImageURL") %>" alt="Album cover"/>
+                            <img class="track-image" src="<%# Eval("ImageURL") ?? "/resources/images/default-cover.png" %>" alt="Album cover"/>
                         </div>
 
                         <div>

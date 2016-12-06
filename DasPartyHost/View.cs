@@ -6,13 +6,14 @@ using DasPartyHost.Utils;
 using DasPartyPersistence.Models;
 using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Web.Models;
+using SpotifyWebAPI;
 using Timer = System.Timers.Timer;
 
 namespace DasPartyHost
 {
     public partial class View : Form
     {
-        private readonly Client _client;
+        private readonly SpotifyRemote _remote;
         private readonly WebAPI _web;
 
         private readonly Playlist _playlist;
@@ -23,23 +24,28 @@ namespace DasPartyHost
         {
             InitializeComponent();
 
-            // Connect to the client:
-            _client = new Client(this);
+            // Connect to the Spotify client:
+            _remote = new SpotifyRemote();
             UpdateTrackView();
             UpdatePlayButton();
+            _remote.OnTrackDone += (s, a) => PlayNextTrack();
+            _remote.OnConnectionError += OnRemoteConnectionError;
+            _remote.OnPlayStateChange += (s, a) => UpdatePlayButton();
 
-            // Connect to the web API:
+            // Connect to the Spotify web API:
             _web = new WebAPI();
 
             // Connect to the Rethink database
             _playlist = Playlist.GetByHost(UserID);
-            RefreshPlaylist();
-            _playlist.OnPlaylistChange += (sender, args) => RefreshPlaylist();
+            UpdatePlaylistView();
+            _playlist.OnPlaylistChange += (sender, args) => UpdatePlaylistView();
         }
 
-        public void UpdateTrackView()
+        #region Update view
+
+        private void UpdateTrackView()
         {
-            var track = _client.Status.Track;
+            var track = _remote.Status.Track;
             this.InvokeIfRequired(() =>
             {
                 if (track != null)
@@ -55,16 +61,61 @@ namespace DasPartyHost
             });
         }
 
-        public void UpdatePlayButton() => playBtn.Text = _client.Playing ? "Pause" : "Play";
+        private void UpdatePlayButton() => playBtn.Text = _remote.IsPlaying ? "Pause" : "Play";
 
-        #region Play buttons
+        private void UpdatePlaylistView()
+        {
+            this.InvokeIfRequired(() =>
+            {
+                var selectedRowIndex = dataGridView1.CurrentCell?.RowIndex;
+                dataGridView1.DataSource = _playlist.GetTracks();
 
-        private void playBtn_Click(object sender, EventArgs e) => _client.Playing = !_client.Playing;
+                // Select the previously selected row again
+                if (selectedRowIndex != null && dataGridView1.Rows.Count > selectedRowIndex)
+                {
+                    // Select the first *visible* column (1)
+                    dataGridView1.CurrentCell = dataGridView1.Rows[(int)selectedRowIndex].Cells[1];
+                }
+            });
+        }
+
+        #endregion
+
+        #region Spotify control
+
+        private void playBtn_Click(object sender, EventArgs e)
+        {
+            if (_remote.IsPlaying) _remote.Pause().RunSynchronously();
+            else _remote.Play().RunSynchronously();
+
+            this.InvokeIfRequired(UpdatePlayButton);
+        }
 
         private void skipBtn_Click(object sender, EventArgs e)
         {
-            _client.Skip();
+            _remote.Skip();
             playBtn.Focus();
+        }
+
+        public bool PlayNextTrack()
+        {
+            var tracks = _playlist.GetTracks();
+
+            var success = true;
+            if (tracks.Length > 0)
+            {
+                // Find track with most votes
+                var track = tracks.MaxBy(t => t.Votes);
+
+                // Remove track from playlist
+                track.Delete(_playlist.ID);
+                _remote.Play(track.ID);
+                UpdatePlaylistView();
+            }
+            else success = false;
+            UpdateTrackView();
+
+            return success;
         }
 
         #endregion
@@ -73,6 +124,10 @@ namespace DasPartyHost
 
         private Timer _searchTimer;
 
+        /// <summary>
+        /// Retrieve search results based on input
+        /// and put them in a listBox
+        /// </summary>
         private void searchInput_TextChanged(object sender, EventArgs e)
         {
             // Executes after 500ms of not typing
@@ -80,8 +135,11 @@ namespace DasPartyHost
             _searchTimer = new Timer(500) {AutoReset = false};
             _searchTimer.Elapsed += (s, ex) =>
             {
-                addTrackBtn.Enabled = false;
-                Invoke(new MethodInvoker(delegate { searchListBox.ClearSelected(); }));
+                this.InvokeIfRequired(() =>
+                {
+                    addTrackBtn.Enabled = false;
+                    searchListBox.ClearSelected();
+                });
                 var results = _web.Search(searchInput.Text);
                 if (results.Tracks == null) return;
 
@@ -113,9 +171,11 @@ namespace DasPartyHost
             _searchTimer.Start();
         }
 
+        /// <summary>
+        /// Enables add-button when a track result is selected
+        /// </summary>
         private void searchListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Enable add-button if item selected
             addTrackBtn.Enabled = searchListBox.SelectedIndex >= 0;
         }
 
@@ -131,55 +191,15 @@ namespace DasPartyHost
 
         #endregion
 
-        #region Database stuff
+        #region Managing playlist
 
-        private void RefreshPlaylist() => this.InvokeIfRequired(() => dataGridView1.DataSource = _playlist.GetTracks());
-        private void refreshBtn_Click(object sender, EventArgs e) => RefreshPlaylist();
-
-        public bool PlayNextTrack()
-        {
-            var tracks = _playlist.GetTracks();
-
-            var success = true;
-            if (tracks.Length > 0)
-            {
-                // Find track with most votes
-                var track = tracks.MaxBy(t => t.Votes);
-
-                // Remove track from playlist
-                track.Delete(_playlist.ID);
-                _client.Play(track.ID);
-                RefreshPlaylist();
-            }
-            else success = false;
-            UpdateTrackView();
-
-
-            return success;
-        }
-
-        #endregion
+        private void refreshBtn_Click(object sender, EventArgs e) => UpdatePlaylistView();
 
         private Track SelectedTrack => (Track) dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].DataBoundItem;
 
-        #region Voting
-
-        private void upvoteBtn_Click(object sender, EventArgs e)
-        {
-            // Upvote selected track
-            SelectedTrack.Vote(UserID, _playlist.ID);
-        }
-
-        private void downvoteBtn_Click(object sender, EventArgs e)
-        {
-            // Downvote selected track
-            SelectedTrack.Vote(UserID, _playlist.ID, true);
-        }
-
-        #endregion
-
-        #region Deleting track
-
+        /// <summary>
+        /// Delete a track from the playlist
+        /// </summary>
         private void View_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -188,8 +208,57 @@ namespace DasPartyHost
             }
         }
 
+        #region Voting on a track
+
+        private void upvoteBtn_Click(object sender, EventArgs e) => SelectedTrack.Vote(UserID, _playlist.ID);
+        private void downvoteBtn_Click(object sender, EventArgs e) => SelectedTrack.Vote(UserID, _playlist.ID, true);
+
         #endregion
 
+        #endregion
 
+        #region Connection handling
+
+        private void OnRemoteConnectionError(object s, SpotifyRemote.ConnectionErrorEventArgs a)
+        {
+            DialogResult result;
+            switch (a.ErrorType)
+            {
+                case SpotifyRemote.ConnectionErrorEventArgs.Type.SpotifyNotRunning:
+                    result = MessageBox.Show(this, "Spotify is not running", "Cannot start party!",
+                        MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                    if (result == DialogResult.Retry)
+                    {
+                        // TODO
+                    }
+                    else Application.Exit();
+                    break;
+                case SpotifyRemote.ConnectionErrorEventArgs.Type.SpotifyWebHelperConnection:
+                    result = MessageBox.Show(this, "hisSpotify Web Helper is not running. Try restarting Spotify.",
+                        "Cannot start party!", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                    if (result == DialogResult.Retry)
+                    {
+                        // TODO
+                    }
+                    else Application.Exit();
+                    break;
+                case SpotifyRemote.ConnectionErrorEventArgs.Type.SpotifyConnection:
+                    result = MessageBox.Show(this, "Could not connect to Spotify. Try restarting Spotify.",
+                        "Cannot start party!", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                    if (result == DialogResult.Retry)
+                    {
+                        // TODO
+                    }
+                    else Application.Exit();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        #endregion
     }
 }

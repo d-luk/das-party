@@ -71,7 +71,7 @@
             this.panel1.Controls.Add(this.playBtn);
             this.panel1.Controls.Add(this.skipBtn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(418, 16);
+            this.panel1.Location = new System.Drawing.Point(391, 16);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(5);
             this.panel1.Size = new System.Drawing.Size(93, 73);
@@ -106,7 +106,7 @@
             this.nowPlaying.Location = new System.Drawing.Point(76, 16);
             this.nowPlaying.Name = "nowPlaying";
             this.nowPlaying.Padding = new System.Windows.Forms.Padding(10);
-            this.nowPlaying.Size = new System.Drawing.Size(342, 73);
+            this.nowPlaying.Size = new System.Drawing.Size(315, 73);
             this.nowPlaying.TabIndex = 0;
             this.nowPlaying.Text = "Nothing";
             this.nowPlaying.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -163,7 +163,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(514, 458);
+            this.panel2.Size = new System.Drawing.Size(487, 458);
             this.panel2.TabIndex = 4;
             // 
             // panel5
@@ -173,7 +173,7 @@
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(514, 366);
+            this.panel5.Size = new System.Drawing.Size(487, 366);
             this.panel5.TabIndex = 2;
             // 
             // dataGridView1
@@ -197,7 +197,7 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(514, 341);
+            this.dataGridView1.Size = new System.Drawing.Size(487, 341);
             this.dataGridView1.TabIndex = 0;
             // 
             // iDDataGridViewTextBoxColumn
@@ -251,7 +251,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel3.Location = new System.Drawing.Point(0, 341);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(514, 25);
+            this.panel3.Size = new System.Drawing.Size(487, 25);
             this.panel3.TabIndex = 4;
             // 
             // refreshBtn
@@ -268,7 +268,7 @@
             // upvoteBtn
             // 
             this.upvoteBtn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.upvoteBtn.Location = new System.Drawing.Point(364, 0);
+            this.upvoteBtn.Location = new System.Drawing.Point(337, 0);
             this.upvoteBtn.Name = "upvoteBtn";
             this.upvoteBtn.Size = new System.Drawing.Size(75, 25);
             this.upvoteBtn.TabIndex = 2;
@@ -279,7 +279,7 @@
             // downvoteBtn
             // 
             this.downvoteBtn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.downvoteBtn.Location = new System.Drawing.Point(439, 0);
+            this.downvoteBtn.Location = new System.Drawing.Point(412, 0);
             this.downvoteBtn.Name = "downvoteBtn";
             this.downvoteBtn.Size = new System.Drawing.Size(75, 25);
             this.downvoteBtn.TabIndex = 3;
@@ -295,7 +295,7 @@
             this.nowPlayingBox.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.nowPlayingBox.Location = new System.Drawing.Point(0, 366);
             this.nowPlayingBox.Name = "nowPlayingBox";
-            this.nowPlayingBox.Size = new System.Drawing.Size(514, 92);
+            this.nowPlayingBox.Size = new System.Drawing.Size(487, 92);
             this.nowPlayingBox.TabIndex = 4;
             this.nowPlayingBox.TabStop = false;
             this.nowPlayingBox.Text = "Now playing";
@@ -314,7 +314,7 @@
             // 
             this.panel4.Controls.Add(this.searchGroupBox);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel4.Location = new System.Drawing.Point(514, 0);
+            this.panel4.Location = new System.Drawing.Point(487, 0);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(200, 458);
             this.panel4.TabIndex = 2;
@@ -323,13 +323,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 458);
+            this.ClientSize = new System.Drawing.Size(687, 458);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel4);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.MaximumSize = new System.Drawing.Size(1024, 768);
-            this.MinimumSize = new System.Drawing.Size(500, 310);
+            this.MinimumSize = new System.Drawing.Size(0, 310);
             this.Name = "View";
             this.Text = "Das.Party";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.View_KeyDown);

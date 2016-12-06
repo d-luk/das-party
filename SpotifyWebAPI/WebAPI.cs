@@ -17,4 +17,4 @@ namespace SpotifyWebAPI
 
         public SearchItem Search(string input) => _spotify.SearchItems(input, SearchType.Track);
     }
-}
+} 
