@@ -28,9 +28,9 @@ namespace DasPartyHost
             _remote = new SpotifyRemote();
             UpdateTrackView();
             UpdatePlayButton();
-            _remote.OnTrackDone += (s, a) => PlayNextTrack();
+            _remote.OnTrackDone += (s, a) => this.InvokeIfRequired(() => PlayNextTrack());
             _remote.OnConnectionError += OnRemoteConnectionError;
-            _remote.OnPlayStateChange += (s, a) => UpdatePlayButton();
+            _remote.OnPlayStateChange += (s, a) => this.InvokeIfRequired(UpdatePlayButton);
 
             // Connect to the Spotify web API:
             _web = new WebAPI();

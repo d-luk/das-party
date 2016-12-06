@@ -23,6 +23,12 @@ namespace DasPartyHost.Spotify
             {
                 // Match Remote.IsPlaying with client
                 if (Status.Playing != IsPlaying) IsPlaying = Status.Playing;
+
+                // Check if stopped playing because track ended
+                if (!IsPlaying && Math.Abs(Status.PlayingPosition) < 0.0001)
+                {
+                    OnTrackDone?.Invoke(this, EventArgs.Empty);
+                }
             };
             _spotify.OnTrackChange += async (s, e) =>
             {
@@ -111,6 +117,7 @@ namespace DasPartyHost.Spotify
 
         private void TryConnect()
         {
+            // TODO: Only check every x seconds
             var connected = false;
             while (!connected)
             {
