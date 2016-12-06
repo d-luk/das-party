@@ -1,5 +1,5 @@
-﻿using SpotifyAPI.Web.Enums;
-using SpotifyAPI.Web.Models;
+﻿using System.Linq;
+using SpotifyAPI.Web.Enums;
 
 namespace SpotifyWebAPI
 {
@@ -11,10 +11,20 @@ namespace SpotifyWebAPI
         {
             _spotify = new SpotifyAPI.Web.SpotifyWebAPI
             {
-                UseAuth = false // Disables Auth
+                UseAuth = false
             };
         }
 
-        public SearchItem Search(string input) => _spotify.SearchItems(input, SearchType.Track);
+        public TrackResult[] SearchTracks(string input, int limit = 20)
+        {
+            return _spotify.SearchItems(input, SearchType.Track, limit).Tracks.Items
+                .Select(fullTrack => new TrackResult(fullTrack)).ToArray();
+        }
+
+        public TrackResult GetTrackByID(string trackID)
+        {
+            var track = _spotify.GetTrack(trackID);
+            return track != null ? new TrackResult(track) : null;
+        }
     }
 } 

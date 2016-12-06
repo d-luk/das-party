@@ -191,11 +191,16 @@
       <Project>{BB73BF5E-0A48-4EB7-8F07-2CFFBCC7515E}</Project>
       <Name>DasPartyPersistence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpotifyWebAPI\SpotifyWebAPI.csproj">
+      <Project>{E6044214-3928-4E29-B3C9-CC6C459E746C}</Project>
+      <Name>SpotifyWebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="resources\scripts\home.ts" />
     <TypeScriptCompile Include="resources\scripts\site.ts" />
     <TypeScriptCompile Include="resources\scripts\typings\api.d.ts" />
+    <TypeScriptCompile Include="resources\scripts\typings\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

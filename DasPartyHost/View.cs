@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DasPartyHost.Models;
-using DasPartyHost.Spotify;
-using DasPartyHost.Utils;
 using DasPartyPersistence.Models;
 using SpotifyAPI.Local.Enums;
-using SpotifyAPI.Web.Models;
 using SpotifyWebAPI;
 using Timer = System.Timers.Timer;
 
@@ -144,15 +140,15 @@ namespace DasPartyHost
                     addTrackBtn.Enabled = false;
                     searchListBox.ClearSelected();
                 });
-                var results = _web.Search(searchInput.Text);
-                if (results.Tracks == null) return;
+                var results = _web.SearchTracks(searchInput.Text);
+                if (results.Length == 0) return;
 
                 // Check if artist names can be hidden in results (if all are the same)
                 var hideArtists = true;
                 var tmpName = "";
-                foreach (var track in results.Tracks.Items)
+                foreach (var track in results)
                 {
-                    var name = track.Artists[0].Name;
+                    var name = track.Artist;
                     if (tmpName == "") tmpName = name;
                     else if (name != tmpName)
                     {
@@ -166,9 +162,10 @@ namespace DasPartyHost
                 {
                     searchListBox.Items.Clear();
 
-                    foreach (FullTrack track in results.Tracks.Items)
+                    foreach (var track in results)
                     {
-                        searchListBox.Items.Add(new TrackResult(track) {HideArtist = hideArtists});
+                        track.HideArtist = hideArtists;
+                        searchListBox.Items.Add(track);
                     }
                 }));
             };
@@ -187,7 +184,7 @@ namespace DasPartyHost
         {
             // Add track to the database
             var result = (TrackResult) searchListBox.SelectedItem;
-            _playlist.AddTrack(new Track(result.ID, result.Artists[0], result.Name, result.ImageURL, result.Votes));
+            _playlist.AddTrack(new Track(result.ID, result.Artist, result.Name, result.ImageURL, result.Votes), UserID);
 
             // Remove result from the list
             searchListBox.Items.RemoveAt(searchListBox.SelectedIndex);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace DasPartyHost.Utils
+namespace DasPartyHost
 {
     public static class Extensions
     {

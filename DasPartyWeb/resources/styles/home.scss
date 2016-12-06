@@ -49,6 +49,19 @@
     }
 }
 
-#template-track {
+#template-track, #trackresult-template {
     display: none;
+}
+
+#tracksearch-results {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px; 
+    margin-top: 20px;
+}
+
+.add-track-btn {
+    font-size: 40px !important;
+    font-weight: bold;
+    line-height: 0.7;
 }

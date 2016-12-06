@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrackResult.cs" />
     <Compile Include="WebAPI.cs" />
   </ItemGroup>
   <PropertyGroup>

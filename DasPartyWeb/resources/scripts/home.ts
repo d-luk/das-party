@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../DasPartyHost/Scripts/typings/jquery/jquery.d.ts" />
-module SpotifyLogin {
+﻿module SpotifyLogin {
     export var loggedInUser: SpotifyAPI.ILoginResponse;
 
     var localToken: string = localStorage.getItem("token");

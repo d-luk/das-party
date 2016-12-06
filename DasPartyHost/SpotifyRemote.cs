@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Models;
 
-namespace DasPartyHost.Spotify
+namespace DasPartyHost
 {
     /// <summary>
     /// Remote for controlling the Spotify client
@@ -30,15 +30,11 @@ namespace DasPartyHost.Spotify
                     OnTrackDone?.Invoke(this, EventArgs.Empty);
                 }
             };
-            _spotify.OnTrackChange += async (s, e) =>
+            _spotify.OnTrackChange += (s, e) =>
             {
                 // Pause and trigger OnTrackDone if track was not changed by Remote
                 if (_switching) _switching = false;
-                else
-                {
-                    await Pause();
-                    OnTrackDone?.Invoke(this, EventArgs.Empty);
-                }
+                else OnTrackDone?.Invoke(this, EventArgs.Empty);
             };
             TryConnect();
 

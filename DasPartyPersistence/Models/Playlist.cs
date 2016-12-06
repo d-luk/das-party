@@ -73,7 +73,7 @@ namespace DasPartyPersistence.Models
             return GetTracks().First(t => t.ID == trackID);
         }
 
-        public void AddTrack(Track track)
+        public void AddTrack(Track track, string userID)
         {
             // Add track to database if not exists
             var trackExists =
@@ -102,7 +102,7 @@ namespace DasPartyPersistence.Models
             }
 
             // Add upvote by host if not exists
-            track.Vote(Host.ID, ID);
+            track.Vote(userID, ID);
         }
 
         #region Change listeners

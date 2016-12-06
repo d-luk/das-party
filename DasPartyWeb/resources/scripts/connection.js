@@ -43,7 +43,8 @@
                     var trackID = $(this).closest(".track-container").data("id");
                     var success = hub.server.vote(SpotifyLogin.loggedInUser.id, playlistID, trackID, false);
                     if (!success) console.log("Upvote failed");
-                });
+                }
+                );
 
         $("#playlist-container")
             .on("click",
@@ -52,6 +53,45 @@
                     var trackID = $(this).closest(".track-container").data("id");
                     var success = hub.server.vote(SpotifyLogin.loggedInUser.id, playlistID, trackID, true);
                     if (!success) console.log("Downvote failed");
+                }
+            );
+
+        var inputTimeout;
+        var $searchResults = $("#tracksearch-results");
+        $("#tracksearch-input").on("input", function () {
+            var $this = $(this);
+            clearTimeout(inputTimeout);
+            inputTimeout = setTimeout(function () {
+                var input = $.trim($this.val());
+                if (input) {
+                    hub.server.search(input).done(function (trackResults) {
+                        $searchResults.empty();
+                        trackResults.forEach(function(trackResult) {
+                            var $newResult = $("#trackresult-template > .track-container").clone();
+                            $newResult.attr("id", "");
+                            $newResult.attr("data-id", trackResult.ID);
+
+                            if (trackResult.ImageURL) {
+                                $newResult.find(".track-image").attr("src", trackResult.ImageURL);
+                            }
+
+                            $newResult.find(".track-name").html(trackResult.Name);
+                            $newResult.find(".track-artist").html(trackResult.Artist);
+
+                            $searchResults.append($newResult);
+                        });
+                    });
+                }
+            }, 500);
+        });
+
+        $searchResults.on("click", ".add-track-btn", function () {
+            var $trackContainer = $(this).closest(".track-container");
+            var trackID = $trackContainer.data("id");
+            hub.server.addTrack(SpotifyLogin.loggedInUser.id, playlistID, trackID)
+                .done(function(success) {
+                    if (success) $trackContainer.remove();
                 });
+        });
     }
 });

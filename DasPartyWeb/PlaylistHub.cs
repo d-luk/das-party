@@ -2,14 +2,14 @@
 using System.Linq;
 using DasPartyPersistence.Models;
 using Microsoft.AspNet.SignalR;
-using SpotifyAPI.Web;
+using SpotifyWebAPI;
 
 namespace DasPartyWeb
 {
     public class PlaylistHub : Hub
     {
         private static readonly List<Playlist> Playlists = new List<Playlist>();
-        private readonly SpotifyWebAPI _api = new SpotifyWebAPI();
+        private static readonly WebAPI WebAPI = new WebAPI();
 
         public bool Join(string playlistID)
         {
@@ -57,9 +57,26 @@ namespace DasPartyWeb
             return success;
         }
 
-//        public Track[] Search(string input)
-//        {
-//            new SpotifyWebAPI();
-//        }
+        public TrackResult[] Search(string input)
+            => WebAPI.SearchTracks(input, 10);
+
+        public bool AddTrack(string userID, string playlistID, string trackID)
+        {
+            // TODO: Authentication
+            var playlist = Playlists.FirstOrDefault(p => p.ID == playlistID);
+
+            var success = playlist != null;
+            if (success)
+            {
+                var track = WebAPI.GetTrackByID(trackID);
+                success = track != null;
+                if (success)
+                {
+                    playlist.AddTrack(new Track(track.ID, track.Artist, track.Name, track.ImageURL, track.Votes), userID);
+                }
+            }
+
+            return success;
+        }
     }
 }

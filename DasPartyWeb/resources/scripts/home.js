@@ -1,4 +1,3 @@
-/// <reference path="../../../DasPartyHost/Scripts/typings/jquery/jquery.d.ts" />
 var SpotifyLogin;
 (function (SpotifyLogin) {
     var localToken = localStorage.getItem("token");

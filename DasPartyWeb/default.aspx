@@ -77,7 +77,32 @@
 
                 </ItemTemplate>
             </asp:Repeater>
+            
         </div>
+        
+        <section id="tracksearch-section">
+                <h2>Search tracks</h2>
+                <input id="tracksearch-input" type="text" placeholder="Find your track..."/>
+                
+                <div id="trackresult-template" class="hidden">
+                    <div class="track-container" data-id="">
+                        <div class="track-image-container">
+                            <img class="track-image" src="/resources/images/default-cover.png" alt="Album cover"/>
+                        </div>
+
+                        <div>
+                            <div class="track-name"></div>
+                            <div><span class="track-artist"></span></div>
+                        </div>
+
+                        <div class="track-buttons">
+                            <button class="btn add-track-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tracksearch-results"></div>
+            </section>
     </div>
 
 </asp:Content>
