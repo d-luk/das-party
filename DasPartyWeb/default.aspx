@@ -31,7 +31,7 @@
                     <img class="track-image" src="/resources/images/default-cover.png" alt="Album cover"/>
                 </div>
 
-                <div>
+                <div class="track-info">
                     <div class="track-name"></div>
 
                     <div>
@@ -57,7 +57,7 @@
                             <img class="track-image" src="<%# Eval("ImageURL") ?? "/resources/images/default-cover.png" %>" alt="Album cover"/>
                         </div>
 
-                        <div>
+                        <div class="track-info">
                             <div class="track-name"><%# Eval("Name") %></div>
 
                             <div>

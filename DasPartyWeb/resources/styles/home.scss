@@ -6,10 +6,15 @@
     position: relative;
     margin-bottom: 5px;
     height: 100px;
+    white-space: nowrap;
 
     > div {
         display: inline-block;
         vertical-align: middle;
+
+        &.track-info {
+            width: calc(100% - 160px);
+        }
     }
 }
 
@@ -29,6 +34,8 @@
 
 .track-name {
     font-size: 28px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .track-buttons {
@@ -64,4 +71,9 @@
     font-size: 40px !important;
     font-weight: bold;
     line-height: 0.7;
+}
+
+#tracksearch-input {
+    padding: 7px 10px;
+    border: 0;
 }

@@ -4,10 +4,13 @@
 .track-container {
   position: relative;
   margin-bottom: 5px;
-  height: 100px; }
+  height: 100px;
+  white-space: nowrap; }
   .track-container > div {
     display: inline-block;
     vertical-align: middle; }
+    .track-container > div.track-info {
+      width: calc(100% - 160px); }
 
 .track-image-container {
   margin-right: 10px; }
@@ -20,7 +23,9 @@
   display: block; }
 
 .track-name {
-  font-size: 28px; }
+  font-size: 28px;
+  text-overflow: ellipsis;
+  overflow: hidden; }
 
 .track-buttons {
   position: absolute;
@@ -48,4 +53,8 @@
   font-size: 40px !important;
   font-weight: bold;
   line-height: 0.7; }
+
+#tracksearch-input {
+  padding: 7px 10px;
+  border: 0; }
 
