@@ -51,7 +51,7 @@ namespace DasPartyHost
         public class ConnectionErrorEventArgs : EventArgs
         {
             public Type ErrorType { get; }
-            public bool Retry { private get; set; } = false;
+            public bool Retry { get; set; } = false;
 
             public ConnectionErrorEventArgs(Type errorType)
             {
@@ -104,7 +104,7 @@ namespace DasPartyHost
         public async void Play(string trackID)
         {
             _switching = true;
-            await _spotify.PlayURL("spotify:track:" + trackID);
+            await _spotify.PlayURL($"spotify:track:{trackID}");
             IsPlaying = true;
         }
 
@@ -116,9 +116,9 @@ namespace DasPartyHost
         private const double ConnectionInterval = 1000;
         private readonly Timer _connectionTimer = new Timer(ConnectionInterval) {AutoReset = false};
 
-        private void TryConnect()
+        private bool TryConnect()
         {
-            if (_connectionTimer.Enabled) return;
+            if (_connectionTimer.Enabled) return true;
 
             var connected = false;
             while (!connected)
@@ -142,18 +142,29 @@ namespace DasPartyHost
                         }
                     }
 
-                    OnConnectionError?.Invoke(this,
-                        new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyNotRunning));
+                    var eventArgs = new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyNotRunning);
+                    OnConnectionError?.Invoke(this, eventArgs);
+
+                    if (eventArgs.Retry) continue;
+                    else break;
                 }
+
                 if (!SpotifyLocalAPI.IsSpotifyWebHelperRunning())
                 {
-                    OnConnectionError?.Invoke(this,
-                        new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyWebHelperConnection));
+                    var eventArgs = new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyWebHelperConnection);
+                    OnConnectionError?.Invoke(this, eventArgs);
+
+                    if (eventArgs.Retry) continue;
+                    else break;
                 }
+
                 if (!_spotify.Connect())
                 {
-                    OnConnectionError?.Invoke(this,
-                        new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyConnection));
+                    var eventArgs = new ConnectionErrorEventArgs(ConnectionErrorEventArgs.Type.SpotifyConnection);
+                    OnConnectionError?.Invoke(this, eventArgs);
+
+                    if (eventArgs.Retry) continue;
+                    else break;
                 }
 
                 connected = true;
@@ -161,6 +172,8 @@ namespace DasPartyHost
 
             // Restart the timer
             _connectionTimer.Start();
+
+            return connected;
         }
 
         #endregion
