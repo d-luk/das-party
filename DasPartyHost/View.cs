@@ -225,6 +225,9 @@ namespace DasPartyHost
 
         #region Connection handling
 
+        /// <summary>
+        /// Tells the user that the Spotify client connection failed
+        /// </summary>
         private void OnRemoteConnectionError(object s, SpotifyRemote.ConnectionErrorEventArgs a)
         {
             DialogResult result;
@@ -234,30 +237,21 @@ namespace DasPartyHost
                     result = MessageBox.Show(this, "Spotify is not running", "Cannot start party!",
                         MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
-                    if (result == DialogResult.Retry)
-                    {
-                        // TODO
-                    }
+                    if (result == DialogResult.Retry) a.Retry = true;
                     else Application.Exit();
                     break;
                 case SpotifyRemote.ConnectionErrorEventArgs.Type.SpotifyWebHelperConnection:
-                    result = MessageBox.Show(this, "hisSpotify Web Helper is not running. Try restarting Spotify.",
+                    result = MessageBox.Show(this, "Spotify Web Helper is not running. Try restarting Spotify.",
                         "Cannot start party!", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
-                    if (result == DialogResult.Retry)
-                    {
-                        // TODO
-                    }
+                    if (result == DialogResult.Retry) a.Retry = true;
                     else Application.Exit();
                     break;
                 case SpotifyRemote.ConnectionErrorEventArgs.Type.SpotifyConnection:
                     result = MessageBox.Show(this, "Could not connect to Spotify. Try restarting Spotify.",
                         "Cannot start party!", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
-                    if (result == DialogResult.Retry)
-                    {
-                        // TODO
-                    }
+                    if (result == DialogResult.Retry) a.Retry = true;
                     else Application.Exit();
                     break;
                 default:

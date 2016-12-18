@@ -51,6 +51,7 @@ namespace DasPartyHost
         public class ConnectionErrorEventArgs : EventArgs
         {
             public Type ErrorType { get; }
+            public bool Retry { private get; set; } = false;
 
             public ConnectionErrorEventArgs(Type errorType)
             {
