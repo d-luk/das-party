@@ -3,13 +3,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Timers;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Models;
 
 namespace DasPartyHost
 {
     /// <summary>
-    /// Remote for controlling the Spotify client
+    /// Remote control for the Spotify client
     /// </summary>
     public class SpotifyRemote
     {
@@ -63,7 +64,7 @@ namespace DasPartyHost
                 SpotifyConnection
             }
         }
-        
+
         #endregion
 
         public StatusResponse Status
@@ -76,6 +77,7 @@ namespace DasPartyHost
         }
 
         private bool _isPlaying;
+
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -110,10 +112,13 @@ namespace DasPartyHost
         #region Connect to Spotify client
 
         private bool _processStarted;
+        private const double ConnectionInterval = 1000;
+        private readonly Timer _connectionTimer = new Timer(ConnectionInterval) {AutoReset = false};
 
         private void TryConnect()
         {
-            // TODO: Only check every x seconds
+            if (_connectionTimer.Enabled) return;
+
             var connected = false;
             while (!connected)
             {
@@ -152,6 +157,9 @@ namespace DasPartyHost
 
                 connected = true;
             }
+
+            // Restart the timer
+            _connectionTimer.Start();
         }
 
         #endregion
