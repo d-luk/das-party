@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DasPartyPersistence;
 using DasPartyPersistence.Models;
 using Microsoft.AspNet.SignalR;
 using SpotifyWebAPI;
@@ -33,8 +34,8 @@ namespace DasPartyWeb
 
         private Playlist InitPlaylist(string playlistID)
         {
-            var playlist = Playlist.Get(playlistID);
-            playlist.OnPlaylistChange += (s, a) => Clients.Group(playlistID).applyChanges(a.Tracks);
+            var playlist = Playlist.Get(playlistID); 
+            PlaylistListener.Instance.AddHandler(playlist.ID, (s, a) => Clients.Group(playlistID).applyChanges(a.Tracks));
             return playlist;
         }
 

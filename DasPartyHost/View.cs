@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DasPartyPersistence;
 using DasPartyPersistence.Models;
 using SpotifyAPI.Local.Enums;
 using SpotifyWebAPI;
@@ -32,10 +33,14 @@ namespace DasPartyHost
             // Connect to the Spotify web API:
             _web = new WebAPI();
 
-            // Connect to the Rethink database
+            // Retrieve playlist from database
             _playlist = Playlist.GetByHost(UserID);
             UpdatePlaylistView();
-            _playlist.OnPlaylistChange += (sender, args) => UpdatePlaylistView();
+
+            // Listen to playlist changes
+            var listener = PlaylistListener.Instance;
+            listener.Timeout = 100; 
+            listener.AddHandler(_playlist.ID, (sender, args) => UpdatePlaylistView());
         }
 
         #region Update view

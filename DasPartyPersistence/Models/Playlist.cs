@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 
 namespace DasPartyPersistence.Models
 {
@@ -16,8 +13,6 @@ namespace DasPartyPersistence.Models
             ID = id;
             Name = name;
             Host = host;
-
-            InitChangeListeners();
         }
 
         public static Playlist Get(string id)
@@ -104,59 +99,5 @@ namespace DasPartyPersistence.Models
             // Add upvote by host if not exists
             track.Vote(userID, ID);
         }
-
-        #region Change listeners
-        
-        public event EventHandler<PlaylistChangeEventArgs> OnPlaylistChange;
-
-        public class PlaylistChangeEventArgs : EventArgs
-        {
-            // TODO: Only store changes
-
-            private readonly string _playlistID;
-
-            private Track[] _tracks;
-            public Track[] Tracks => _tracks ?? (_tracks = GetTracks(_playlistID));
-
-            public PlaylistChangeEventArgs(string playlistID)
-            {
-                _playlistID = playlistID;
-            }
-        }
-
-        private void InitChangeListeners()
-        {
-            // Listen for vote changes
-            new Thread(() =>
-                {
-                    var voteChanges = DB.R.Table("vote").Changes().RunCursor<Vote>(DB.Connection);
-                    // TODO: Only changes on current playlist
-
-                    foreach (var voteChange in voteChanges)
-                    {
-                        Debug.WriteLine("Votes changed");
-                        OnPlaylistChange?.Invoke(this, new PlaylistChangeEventArgs(ID));
-                    }
-                })
-                {IsBackground = true}.Start();
-
-            // Listen for playlistTrack changes
-            new Thread(() =>
-                {
-                    var playlistChanges = DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID))
-                        .Changes().RunCursor<Playlist>(DB.Connection);
-
-                    foreach (var playlistChange in playlistChanges)
-                    {
-                        Debug.WriteLine("Playlist tracks changed");
-                        OnPlaylistChange?.Invoke(this, new PlaylistChangeEventArgs(ID));
-                    }
-                })
-                {IsBackground = true}.Start();
-        }
-
-        #endregion
     }
-    
-
 }
