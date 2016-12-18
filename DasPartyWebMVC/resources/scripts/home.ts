@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../DasPartyHost/Scripts/typings/jquery/jquery.d.ts" />
-module SpotifyLogin {
+﻿module SpotifyLogin {
     var localToken: string = localStorage.getItem("token");
 
     function login(callback: (token: string) => any, forced?: boolean) {
@@ -97,8 +96,8 @@ module SpotifyLogin {
                     images: [
                         {
                             height: null,
-                            url:
-                                "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/11542099_796414300457857_4421964208460940101_n.jpg?oh=9c7d2af153cb59848b9f3e50e159c8d2&oe=58C83D80",
+                            url: "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/11542099_796414300457857_4421964208460940101_n.jpg" +
+                                "?oh=9c7d2af153cb59848b9f3e50e159c8d2&oe=58C83D80",
                             width: null
                         }
                     ],
