@@ -21,7 +21,7 @@ namespace DasPartyHost
         public View()
         {
             InitializeComponent();
-
+            
             // Connect to the Spotify client:
             _remote = new SpotifyRemote();
             UpdateTrackView();

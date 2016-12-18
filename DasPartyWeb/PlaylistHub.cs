@@ -9,6 +9,8 @@ namespace DasPartyWeb
 {
     public class PlaylistHub : Hub
     {
+        // TODO: Authentication
+        
         private static readonly List<Playlist> Playlists = new List<Playlist>();
         private static readonly WebAPI WebAPI = new WebAPI();
 
@@ -31,7 +33,7 @@ namespace DasPartyWeb
 
             return success;
         }
-
+        
         private Playlist InitPlaylist(string playlistID)
         {
             var playlist = Playlist.Get(playlistID); 
@@ -41,7 +43,6 @@ namespace DasPartyWeb
 
         public bool Vote(string userID, string playlistID, string trackID, bool isDownvote)
         {
-            // TODO: Authentication
             var playlist = Playlists.FirstOrDefault(p => p.ID == playlistID);
 
             var success = playlist != null;
@@ -63,7 +64,6 @@ namespace DasPartyWeb
 
         public bool AddTrack(string userID, string playlistID, string trackID)
         {
-            // TODO: Authentication
             var playlist = Playlists.FirstOrDefault(p => p.ID == playlistID);
 
             var success = playlist != null;
@@ -79,5 +79,7 @@ namespace DasPartyWeb
 
             return success;
         }
+
+        public Vote[] GetVotes(string userID, string playlistID) => User.GetVotes(userID, playlistID);
     }
 }

@@ -17,9 +17,11 @@
             Votes = votes;
         }
 
-        public string GetPlaylistTrackID(string playlistID) 
+        public string GetPlaylistTrackID(string playlistID) => GetPlaylistTrackID(ID, playlistID);
+
+        public static string GetPlaylistTrackID(string playlistID, string trackID) 
             => DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID)
-                .With("trackID", ID))[0].G("id").RunResult<string>(DB.Connection);
+                .With("trackID", trackID)).Nth(0).G("id").RunResult<string>(DB.Connection);
         
         public void Delete(string playlistID)
         {
