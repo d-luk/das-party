@@ -5,11 +5,11 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Scripts" ContentPlaceHolderID="Scripts">
-    <script src="/resources/scripts/home.js"></script>
+    <script src="/resources/scripts/home/home.js"></script>
 
     <script src="/resources/scripts/vendor/jquery.signalR-2.2.1.min.js"></script>
     <script src="signalr/hubs"></script>
-    <script src="/resources/scripts/connection.js"></script>
+    <script src="/resources/scripts/home/connection.js"></script>
 </asp:Content>
 
 <asp:Content runat="server" ID="Content" ContentPlaceHolderID="Content">

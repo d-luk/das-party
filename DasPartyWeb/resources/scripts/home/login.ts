@@ -1,7 +1,7 @@
 ﻿module SpotifyLogin {
-    export var loggedInUser: SpotifyAPI.ILoginResponse;
+    export let loggedInUser: SpotifyAPI.ILoginResponse;
 
-    var localToken: string = localStorage.getItem("token");
+    let localToken: string = localStorage.getItem("token");
 
     function login(callback: (token: string) => any, forced?: boolean) {
 
@@ -20,7 +20,7 @@
         function getLoginURL(scopes) {
             return `https://accounts.spotify.com/authorize` +
                 `?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${
-                encodeURIComponent(scopes.join(" "))}&response_type=token`;
+                    encodeURIComponent(scopes.join(" "))}&response_type=token`;
         }
 
         const url = getLoginURL([
@@ -38,7 +38,7 @@
                     localStorage.setItem("token", hash.access_token);
                     callback(hash.access_token);
                 }
-            }, 
+            },
             false);
 
         window.open(url,
@@ -62,8 +62,8 @@
         loggedInUser = user;
         $("#account-info")
             .html("Hello" + (user.display_name ? `, ${user.display_name}`
-                : ($.isNumeric(user.id) ? " there" : `, ${user.id}`))
-            + "! Let's party");
+                    : ($.isNumeric(user.id) ? " there" : `, ${user.id}`))
+                + "! Let's party");
         $("#login-container").hide();
         $("#playlist-wrapper").show();
     }
@@ -99,8 +99,7 @@
                     images: [
                         {
                             height: null,
-                            url:
-                                "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/11542099_796414300457857_4421964208460940101_n.jpg?oh=9c7d2af153cb59848b9f3e50e159c8d2&oe=58C83D80",
+                            url: "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/11542099_796414300457857_4421964208460940101_n.jpg?oh=9c7d2af153cb59848b9f3e50e159c8d2&oe=58C83D80",
                             width: null
                         }
                     ],
