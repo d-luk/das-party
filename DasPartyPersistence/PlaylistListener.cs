@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Timers;
 using DasPartyPersistence.Models;
 using Timer = System.Timers.Timer;
 
@@ -87,10 +88,11 @@ namespace DasPartyPersistence
             {
                 // Reset timer
                 timer.Interval = Timeout;
-                timer.Elapsed += (s, a) =>
+                ElapsedEventHandler[] h = {null};
+                timer.Elapsed += h[0] = (s, a) =>
                 {
                     fireEvent();
-                    timer.Close();
+                    timer.Elapsed -= h[0];
                 };
                 timer.Start();
             }

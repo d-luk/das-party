@@ -26,7 +26,7 @@ namespace DasPartyWeb
                 var newPlaylist = InitPlaylist(playlistID);
                 if (newPlaylist != null)
                 {
-                    Playlists.Add(InitPlaylist(playlistID));
+                    Playlists.Add(newPlaylist); 
                     success = true;
                 }
             }
@@ -37,7 +37,7 @@ namespace DasPartyWeb
         private Playlist InitPlaylist(string playlistID)
         {
             var playlist = Playlist.Get(playlistID); 
-            PlaylistListener.Instance.AddHandler(playlist.ID, (s, a) => Clients.Group(playlistID).applyChanges(a.Tracks));
+            PlaylistListener.Instance.AddHandler(playlistID, (s, a) => Clients.Group(playlistID).applyChanges(a.Tracks));
             return playlist;
         }
 
