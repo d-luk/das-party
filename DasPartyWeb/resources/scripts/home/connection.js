@@ -4,57 +4,62 @@
 ///<reference path="login.ts"/>
 var Connection;
 (function (Connection) {
-    // Declare a proxy to reference the hub.
-    var hub = $.connection.playlistHub;
-    // Create a function that the hub can call to broadcast messages.
-    var $playlist = $("#playlist-container"), $trackTemplate = $("#template-track");
-    hub.client.applyChanges = function (changes) {
-        console.log(changes);
-        $playlist.children(":not(:first-child)").remove();
-        changes.forEach(function (track) {
-            var $newTrack = $trackTemplate.clone().attr("id", "");
-            $newTrack.attr("data-id", track.ID);
-            $newTrack.find(".track-name").html(track.Name);
-            $newTrack.find(".track-artist").html(track.Artist);
-            $newTrack.find(".track-votes").html(track.Votes.toString());
-            if (track.ImageURL) {
-                $newTrack.find(".track-image").attr("src", track.ImageURL);
+    var hub = $.connection.playlistHub, playlistID = "09fef8d7-3958-4b05-8c71-a05a7ae4abf8", $playlist = $("#playlist-container"), $trackTemplate = $("#template-track");
+    var _votes = [];
+    function init() {
+        hub.client.applyChanges = function (changes) {
+            console.log(changes);
+            // Clear playlist and replace by new tracks 
+            $playlist.children(":not(:first-child)").remove();
+            changes.forEach(function (track) {
+                var $newTrack = $trackTemplate.clone().attr("id", "");
+                $newTrack.attr("data-id", track.ID);
+                $newTrack.find(".track-name").html(track.Name);
+                $newTrack.find(".track-artist").html(track.Artist);
+                $newTrack.find(".track-votes").html(track.Votes.toString());
+                if (track.ImageURL) {
+                    $newTrack.find(".track-image").attr("src", track.ImageURL);
+                }
+                $newTrack.appendTo($playlist);
+            });
+            updatePersonalVotes();
+        };
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+            hub.server.join(playlistID).done(function (success) {
+                if (success) {
+                    SpotifyLogin.onLogin(function () {
+                        initListeners();
+                        initVotes();
+                    });
+                }
+                else
+                    console.log("Error: Playlist join failed, cannot vote");
+            });
+        });
+    }
+    Connection.init = init;
+    function processVote($btn, isDownvote) {
+        var trackID = $btn.closest(".track-container").data("id");
+        hub.server.vote(SpotifyLogin.loggedInUser.id, playlistID, trackID, isDownvote)
+            .done(function (success) {
+            if (success) {
+                addVote({ trackID: trackID, isDownvote: isDownvote });
+                $btn.prop("disabled", true);
+                $btn.siblings(".btn").prop("disabled", false);
             }
-            $newTrack.appendTo($playlist);
-        });
-    };
-    var playlistID = "09fef8d7-3958-4b05-8c71-a05a7ae4abf8";
-    // Start the connection.
-    $.connection.hub.start().done(function () {
-        hub.server.join(playlistID).done(function (success) {
-            if (success)
-                initListeners();
             else
-                console.log("Error: Playlist join failed, cannot vote");
+                console.log("Voting failed");
         });
-    });
+    }
     function initListeners() {
         // Upvoting
         $playlist.on("click", ".upvote-btn", function () {
-            var trackID = $(this).closest(".track-container").data("id");
-            var success = hub.server.vote(SpotifyLogin.loggedInUser.id, playlistID, trackID, false);
-            if (!success)
-                console.log("Upvote failed");
-            else {
-                $(this).prop("disabled", true);
-                $(this).siblings(".btn").prop("disabled", false);
-            }
+            processVote($(this), false);
         });
         // Downvoting
         $playlist.on("click", ".downvote-btn", function () {
-            var trackID = $(this).closest(".track-container").data("id");
-            var success = hub.server.vote(SpotifyLogin.loggedInUser.id, playlistID, trackID, true);
-            if (!success)
-                console.log("Downvote failed");
-            else {
-                $(this).prop("disabled", true);
-                $(this).siblings(".btn").prop("disabled", false);
-            }
+            processVote($(this), true);
         });
         // Track search
         var inputTimeout;
@@ -92,4 +97,53 @@ var Connection;
             });
         });
     }
+    function addVote(vote) {
+        var voteIndex = -1;
+        $.each(_votes, function (i, v) {
+            if (v.trackID === vote.trackID) {
+                voteIndex = i;
+                return false;
+            }
+        });
+        if (voteIndex >= 0) {
+            // Already voted
+            _votes[voteIndex] = vote;
+        }
+        else {
+            // Add vote to list
+            _votes.push(vote);
+        }
+    }
+    function initVotes() {
+        hub.server.getVotes(SpotifyLogin.loggedInUser.id, playlistID).done(function (votes) {
+            votes.forEach(function (v) {
+                _votes.push({
+                    trackID: v.TrackID,
+                    isDownvote: v.IsDownvote
+                });
+            });
+            updatePersonalVotes();
+        });
+    }
+    function updatePersonalVotes() {
+        // Disable buttons based on votes
+        var $tracks = $playlist.find("> .track-container");
+        $.each($tracks, function (_, t) {
+            var $track = $(t), id = $track.data("id");
+            // Check if voted on this track
+            var voteIndex = -1;
+            $.each(_votes, function (i, vote) {
+                if (vote.trackID === id) {
+                    voteIndex = i;
+                    return false;
+                }
+            });
+            // Disable corresponding button
+            if (voteIndex >= 0) {
+                $track.find("." + (_votes[voteIndex].isDownvote ? "downvote" : "upvote") + "-btn")
+                    .prop("disabled", true);
+            }
+        });
+    }
 })(Connection || (Connection = {}));
+Connection.init();

@@ -1,5 +1,6 @@
 var SpotifyLogin;
 (function (SpotifyLogin) {
+    var CEvent = CustomEvents.CEvent;
     var localToken = localStorage.getItem("token");
     function login(callback, forced) {
         if (!forced && localToken) {
@@ -7,22 +8,21 @@ var SpotifyLogin;
             return;
         }
         else if (forced) {
-            // Reset token
             localToken = null;
             localStorage.removeItem("token");
         }
         var clientId = "26e3d7571b7947fd9080aa94c2c0621d";
-        var redirectUri = "http://das.party/auth.aspx";
         function getLoginURL(scopes) {
-            return "https://accounts.spotify.com/authorize" +
-                ("?client_id=" + clientId + "&redirect_uri=" + encodeURIComponent(redirectUri) + "&scope=" + encodeURIComponent(scopes.join(" ")) + "&response_type=token");
+            return "https://accounts.spotify.com/authorize"
+                + ("?client_id=" + clientId)
+                + ("&redirect_uri=" + encodeURIComponent("http://das.party/auth.aspx"))
+                + ("&scope=" + encodeURIComponent(scopes.join(" ")))
+                + "&response_type=token";
         }
-        var url = getLoginURL([
-            "user-read-email"
-        ]);
+        var url = getLoginURL(["user-read-email"]);
         var width = 450, height = 730, left = (screen.width / 2) - (width / 2), top = (screen.height / 2) - (height / 2);
         window.addEventListener("message", function (event) {
-            var hash = JSON.parse(event.data);
+            var hash = JSON.parse((event.data));
             if (hash.type === "access_token") {
                 localStorage.setItem("token", hash.access_token);
                 callback(hash.access_token);
@@ -39,10 +39,18 @@ var SpotifyLogin;
             }
         });
     }
+    var loginEvent = new CEvent();
+    function onLogin(handler) {
+        if (SpotifyLogin.loggedInUser)
+            handler();
+        else
+            loginEvent.addHandler(handler);
+    }
+    SpotifyLogin.onLogin = onLogin;
     function startParty(user) {
         SpotifyLogin.loggedInUser = user;
-        $("#account-info")
-            .html("Hello" + (user.display_name ? ", " + user.display_name
+        loginEvent.trigger();
+        $("#account-info").html("Hello" + (user.display_name ? ", " + user.display_name
             : ($.isNumeric(user.id) ? " there" : ", " + user.id))
             + "! Let's party");
         $("#login-container").hide();
@@ -50,8 +58,7 @@ var SpotifyLogin;
     }
     function tryLogin(forced) {
         login(function (accessToken) {
-            getUserData(accessToken)
-                .then(function (response) {
+            getUserData(accessToken).then(function (response) {
                 console.log(response);
                 startParty(response);
             });
@@ -59,8 +66,7 @@ var SpotifyLogin;
     }
     if (localToken)
         tryLogin();
-    $("#btn-login")
-        .click(function () {
+    $("#btn-login").click(function () {
         if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
             startParty({
                 display_name: "Test",
@@ -86,8 +92,8 @@ var SpotifyLogin;
             });
         }
         else {
-            // Token is expired, so force login to refresh token
             tryLogin(typeof localToken !== "undefined" && localToken !== null);
         }
     });
 })(SpotifyLogin || (SpotifyLogin = {}));
+//# sourceMappingURL=login.js.map

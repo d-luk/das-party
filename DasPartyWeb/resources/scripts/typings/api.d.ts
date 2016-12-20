@@ -47,7 +47,6 @@ interface Track {
 interface Vote {
     ID: string,
     UserID: string,
-    PlaylistTrackID: string,
     TrackID: string,
     IsDownvote: boolean,
 }

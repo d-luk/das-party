@@ -5,7 +5,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Scripts" ContentPlaceHolderID="Scripts">
-    <script src="/resources/scripts/home/home.js"></script>
+    <script src="/resources/scripts/home/login.js"></script>
 
     <script src="/resources/scripts/vendor/jquery.signalR-2.2.1.min.js"></script>
     <script src="signalr/hubs"></script>
@@ -13,7 +13,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="Content" ContentPlaceHolderID="Content">
-
+     
     <div id="login-container">
         <h1>Log in to get the party started</h1>
         <button class="btn btn-primary" id="btn-login">Let's party ></button>
