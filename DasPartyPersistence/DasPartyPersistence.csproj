@@ -52,6 +52,7 @@
     <Compile Include="Models\Track.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Vote.cs" />
+    <Compile Include="PlaylistListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

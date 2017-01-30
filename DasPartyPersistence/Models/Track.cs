@@ -3,21 +3,25 @@
     public class Track
     {
         public string ID { get; }
-        public string Artist { get; }
         public string Name { get; }
+        public string Artist { get; }
+        public string ImageURL { get; }
         public int Votes { get; }
 
-        public Track(string id, string artist, string name, int votes)
+        public Track(string id, string artist, string name, string imageUrl, int votes)
         {
             ID = id;
             Artist = artist;
             Name = name;
+            ImageURL = imageUrl;
             Votes = votes;
         }
 
-        public string GetPlaylistTrackID(string playlistID) 
+        public string GetPlaylistTrackID(string playlistID) => GetPlaylistTrackID(playlistID, ID);
+
+        public static string GetPlaylistTrackID(string playlistID, string trackID) 
             => DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID)
-                .With("trackID", ID))[0].G("id").RunResult<string>(DB.Connection);
+                .With("trackID", trackID)).Nth(0).G("id").RunResult<string>(DB.Connection);
         
         public void Delete(string playlistID)
         {

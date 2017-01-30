@@ -1,3 +1,60 @@
-﻿#playlist-container {
+﻿#playlist-wrapper {
   display: none; }
+
+.track-container {
+  position: relative;
+  margin-bottom: 5px;
+  height: 100px;
+  white-space: nowrap; }
+  .track-container > div {
+    display: inline-block;
+    vertical-align: middle; }
+    .track-container > div.track-info {
+      width: calc(100% - 160px); }
+
+.track-image-container {
+  margin-right: 10px; }
+
+.track-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 3px;
+  line-height: 6;
+  display: block; }
+
+.track-name {
+  font-size: 28px;
+  text-overflow: ellipsis;
+  overflow: hidden; }
+
+.track-buttons {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0; }
+  .track-buttons button {
+    font-size: 0;
+    display: block;
+    margin-bottom: 7px; }
+    .track-buttons button img {
+      height: 20px;
+      width: 20px; }
+
+#template-track, #trackresult-template {
+  display: none; }
+
+#tracksearch-results {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-top: 20px; }
+
+.add-track-btn {
+  font-size: 40px !important;
+  font-weight: bold;
+  line-height: 0.7; }
+
+#tracksearch-input {
+  padding: 7px 10px;
+  border: 0; }
 

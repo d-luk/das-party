@@ -3,6 +3,8 @@ using RethinkDb.Driver.Net;
 
 namespace DasPartyPersistence
 {
+    // TODO: Change database to SQL/Mongo
+
     public static class DB
     {
         public static RethinkDB R => RethinkDB.R;
@@ -19,7 +21,5 @@ namespace DasPartyPersistence
 
         public static void Close() => _conn.Close();
         public static void Reconnect() => _conn.Reconnect();
-
-        // TODO: Database limits/timeouts
     }
 }

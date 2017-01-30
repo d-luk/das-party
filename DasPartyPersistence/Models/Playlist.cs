@@ -1,4 +1,6 @@
-﻿namespace DasPartyPersistence.Models
+﻿using System.Linq;
+
+namespace DasPartyPersistence.Models
 {
     public class Playlist
     {
@@ -13,27 +15,36 @@
             Host = host;
         }
 
-        public static Playlist Get(string hostID)
+        public static Playlist Get(string id)
         {
-            // TODO: Filter on hostID
-            return DB.R.Table("playlist").Merge(playlist
+            return DB.R.Table("playlist").Filter(DB.R.HashMap("id", id)).Merge(playlist
                     => DB.R.HashMap("host", DB.R.Table("user").Get(playlist.G("hostID"))))[0].Without("hostID")
                 .RunResult<Playlist>(DB.Connection);
         }
 
-        public Track[] GetTracks()
+        public static Playlist GetByHost(string hostID)
         {
-            return DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID))
+            return DB.R.Table("playlist").Filter(DB.R.HashMap("hostID", hostID)).Merge(playlist
+                    => DB.R.HashMap("host", DB.R.Table("user").Get(playlist.G("hostID"))))[0]
+                .RunResult<Playlist>(DB.Connection);
+        }
+
+        public Track[] GetTracks() => GetTracks(ID);
+
+        public static Track[] GetTracks(string playlistID)
+        {
+            return DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID))
 
                 // PlaylistTrack to Track with left join
                 .InnerJoin(DB.R.Table("track"), (plTrack, track) => plTrack.G("trackID").Eq(track.G("id")))
                 .G("right")
 
                 // Temporarily add playlistTrackID
-//                .Merge(track => DB.R.HashMap("playlistTrackID",
-//                    DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", ID)
-//                        .With("trackID", track.G("id"))).G("id")))
-                .Merge(track => DB.R.HashMap("playlistTrackID", "x"))
+                .Merge(
+                    track =>
+                        DB.R.HashMap("playlistTrackID",
+                            DB.R.Table("playlistTrack").Filter(DB.R.HashMap("playlistID", playlistID)
+                                .With("trackID", track.G("id"))).Nth(0)["id"]))
 
                 // Calculate votes
                 .Merge(track => DB.R.HashMap("votes",
@@ -46,13 +57,18 @@
                         .Sub(DB.R.Table("vote")
                             .Filter(DB.R.HashMap("playlistTrackID", track.G("playlistTrackID"))
                                 .With("isDownvote", true)).Count())))
-
-                // Remove playlistTrackID and execute
                 .Without("playlistTrackID")
+                .OrderBy(DB.R.Desc("votes"))
                 .RunResult<Track[]>(DB.Connection);
         }
 
-        public void AddTrack(Track track)
+        public Track GetTrack(string trackID)
+        {
+            // TODO: Optimize with custom query
+            return GetTracks().First(t => t.ID == trackID);
+        }
+
+        public void AddTrack(Track track, string userID)
         {
             // Add track to database if not exists
             var trackExists =
@@ -60,7 +76,11 @@
             if (!trackExists)
             {
                 DB.R.Table("track")
-                    .Insert(DB.R.HashMap("id", track.ID).With("name", track.Name).With("artist", track.Artist))
+                    .Insert(
+                        DB.R.HashMap("id", track.ID)
+                            .With("name", track.Name)
+                            .With("artist", track.Artist)
+                            .With("imageURL", track.ImageURL))
                     .Run(DB.Connection);
             }
 
@@ -77,7 +97,7 @@
             }
 
             // Add upvote by host if not exists
-            track.Vote(Host.ID, ID);
+            track.Vote(userID, ID);
         }
     }
 }
