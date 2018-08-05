@@ -1,8 +1,7 @@
-# Das Party - #PARTYMACHEN für das Leben
-
-A web and windows application for creating a collaborative playlist.
+# Get Das.Party started! *#partymachen*
+An online application for creating a realtime collaborative playlist. Everyone can add the tracks they like and others can vote for it. The highest voted track will be played next.
 
 ## It's simple
-Everyone can add the tracks they like, and the others can vote if they want to listen to it. The highest voted track will be played next. One person acts as the host and plays the music from their device.
-
-*Note: This application uses the Spotify API, so a Spotify account is needed to vote and play music.*
+1. One device will act as the host and automatically play the next song by connecting to the Spotify application.
+2. All other party members go to the das.party website to cast their votes.
+3. Let the party begin!
